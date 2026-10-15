@@ -1,0 +1,301 @@
+/* POLISH LAYER - rounded layout, glow, scroll reveals, smoother motion.
+   Loaded last (after effects.css) so it overrides the chamfered look without touching component code. */
+:root {
+  --r: clamp(24px, 3.4vw, 48px); /* big rounded slab corners */
+  --r-card: 20px;
+  --r-sm: 14px;
+  --glow: 184, 154, 104; /* survey pink, as r,g,b */
+  --smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ───────── Rounded layout (replaces the chamfered corners) ───────── */
+.chamfer {
+  clip-path: none !important;
+}
+section.chamfer {
+  border-radius: var(--r) var(--r) 0 0;
+}
+a.chamfer,
+button.chamfer,
+div.chamfer {
+  border-radius: var(--r-card);
+}
+.work-cursor-preview {
+  clip-path: none !important;
+  border-radius: var(--r-card);
+}
+.journey__card {
+  clip-path: none !important;
+  border-radius: var(--r-card);
+}
+.process-step {
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.process-step::after {
+  display: none;
+}
+.about-portrait {
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+main .border:not([class*='rounded']):not(input):not(textarea):not(select):not(.spot) {
+  border-radius: var(--r-sm);
+}
+.spot {
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+main input,
+main textarea,
+main select {
+  border-radius: var(--r-sm);
+}
+.btn-fx,
+.menu-toggle {
+  border-radius: 999px;
+}
+.navbar-shell {
+  border-radius: 22px;
+}
+@media (min-width: 1024px) {
+  .navbar-shell--scrolled {
+    border-radius: 999px;
+  }
+}
+img {
+  border-radius: inherit;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+}
+
+/* ───────── Cursor: glowing, no blend modes (blend-mode forces the whole page to re-composite every move) ───────── */
+.kg-cursor,
+.kg-cursor-dot {
+  mix-blend-mode: normal !important;
+}
+.kg-cursor-glow {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(var(--glow), 0.26) 0%, rgba(var(--glow), 0.1) 34%, transparent 68%) !important;
+  filter: none;
+  z-index: 39;
+}
+.kg-cursor__ring {
+  border-color: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 46px 8px rgba(var(--glow), 0.55),
+    inset 0 0 22px 4px rgba(var(--glow), 0.35);
+}
+.kg-cursor__ring::before,
+.kg-cursor__ring::after {
+  background: rgba(255, 255, 255, 0.92);
+}
+.kg-cursor[data-state='link'] .kg-cursor__ring {
+  background: rgba(var(--glow), 0.22);
+  border-color: rgba(var(--glow), 0.95);
+  box-shadow:
+    0 0 60px 10px rgba(var(--glow), 0.6),
+    inset 0 0 30px 6px rgba(var(--glow), 0.45);
+}
+.kg-cursor[data-state='label'] .kg-cursor__ring {
+  box-shadow: 0 0 60px 10px rgba(var(--glow), 0.55);
+}
+.kg-cursor-dot {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow:
+    0 0 14px 4px rgba(var(--glow), 0.9),
+    0 0 32px 10px rgba(var(--glow), 0.45);
+}
+.kg-cursor[data-pressed='true'] .kg-cursor__ring {
+  box-shadow: 0 0 80px 18px rgba(var(--glow), 0.8);
+}
+/* keep cursor + glow alive while scrolling: they only use transform + opacity, so they are cheap */
+html.is-scrolling .kg-cursor,
+html.is-scrolling .kg-cursor-glow,
+html.is-scrolling .kg-grain {
+  visibility: visible !important;
+}
+html.is-scrolling .kg-cursor-dot {
+  background: #fff !important;
+}
+.kg-grain {
+  transform: translateZ(0);
+}
+
+/* ───────── Pointer glow on cards / buttons ───────── */
+.fx-glow {
+  --mx: 50%;
+  --my: 50%;
+  transition:
+    box-shadow 0.45s var(--smooth),
+    border-color 0.45s var(--smooth),
+    transform 0.6s var(--smooth),
+    background-color 0.4s ease;
+}
+.fx-glow.is-glowing {
+  background-image: radial-gradient(380px circle at var(--mx) var(--my), rgba(var(--glow), 0.16), transparent 62%);
+  box-shadow:
+    0 0 0 1px rgba(var(--glow), 0.45),
+    0 22px 60px -18px rgba(var(--glow), 0.55);
+  border-color: rgba(var(--glow), 0.55);
+}
+.btn-fx.fx-glow.is-glowing {
+  background-image: none;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 10px 38px -4px rgba(var(--glow), 0.75);
+}
+.spot.fx-glow.is-glowing {
+  background-image: none;
+  box-shadow: 0 22px 60px -18px rgba(var(--glow), 0.55);
+}
+
+/* ───────── Scroll reveal (up and down) ───────── */
+html.rv-on .rv {
+  opacity: 0;
+  translate: 0 30px;
+  transition:
+    opacity 0.6s var(--smooth),
+    translate 0.8s var(--smooth);
+}
+html.rv-on .rv[data-rv='above'] {
+  translate: 0 -24px;
+} /* scrolling up: it drops in from above */
+html.rv-on .rv.rv-in {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: var(--rv-d, 0ms);
+}
+@media print {
+  html.rv-on .rv {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.rv-on .rv {
+    opacity: 1 !important;
+    translate: none !important;
+    transition: none !important;
+  }
+}
+
+/* ───────── Scroll progress line ───────── */
+.fx-progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  z-index: 9500;
+  pointer-events: none;
+}
+.fx-progress i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, rgb(var(--glow)), #ffb020);
+  box-shadow: 0 0 14px 2px rgba(var(--glow), 0.7);
+  will-change: transform;
+}
+
+/* ───────── Smoother everything ───────── */
+a,
+button,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+/* ───────── Section start / end effects: scroll-driven CSS (compositor, zero JS per frame) ─────────
+   The JS version wrote inherited CSS variables onto whole sections every frame, which re-styled every descendant.
+   Browsers without animation-timeline fall back to lib/sectionEdges.js. */
+@keyframes edge-rise {
+  from {
+    translate: 0 56px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes edge-recede {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 0.955;
+  }
+}
+@keyframes edge-veil {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+@supports (animation-timeline: view()) {
+  [data-edge] {
+    --in: 1;
+    --out: 0;
+  }
+  [data-edge='move'] {
+    transform-origin: 50% 100%;
+    animation:
+      edge-rise linear backwards,
+      edge-recede linear forwards;
+    animation-timeline: view(), view();
+    animation-range:
+      entry 0% entry 55%,
+      exit 15% exit 100%;
+  }
+  [data-edge]::after {
+    opacity: 0;
+    animation: edge-veil linear both;
+    animation-timeline: view();
+    animation-range: exit 15% exit 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-edge='move'],
+    [data-edge]::after {
+      animation: none;
+    }
+  }
+}
+@supports not (animation-timeline: view()) {
+  [data-edge]:not([data-edge-live])::after {
+    display: none;
+  }
+  [data-edge][data-edge-live]::after {
+    will-change: opacity;
+  }
+} /* driven per frame by --in/--out: no extra easing */
+.mesh-flow__blob {
+  filter: none;
+}
+
+/* Image reveal: pictures open out of a framed crop and settle as they enter the viewport. Scroll-driven, no JS. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .img-fx {
+      animation: img-fx linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 38%;
+    }
+    @keyframes img-fx {
+      from {
+        clip-path: inset(16% 16% 16% 16%);
+        transform: scale(1.22);
+        filter: saturate(0.2) contrast(1.15);
+      }
+      to {
+        clip-path: inset(0 0 0 0);
+        transform: scale(1);
+        filter: saturate(1) contrast(1);
+      }
+    }
+  }
+}

@@ -1,0 +1,535 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* BASE - tokens, reset, typography */
+@layer base {
+  :root {
+    /* Stratum palette: materials, not decoration */
+    --slab: #f3efe8; /* light concrete */
+    --pour: #e6e0d4; /* cured concrete */
+    --hoarding: #141311; /* site hoarding green */
+    --deep: #0d0c0b; /* basement green */
+    --spruce: #1d1b18;
+    --moss: #3a362f;
+    --ply: #b89a68; /* formwork plywood */
+    --ply-light: #e8dfca;
+    --survey: #c2a36d; /* survey marking paint */
+    --survey-deep: #7a5f2e; /* survey pink, dark enough for text on concrete */
+    --ink: #16140f;
+    --on-dark: #efeae0;
+    --accent: var(--survey);
+
+    --gutter: clamp(16px, 2.5vw, 40px);
+    --nav-h: 60px;
+    --ch: clamp(22px, 3.2vw, 48px); /* chamfer size on stacked slabs */
+    --display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+    --sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --seam: clamp(40px, 7vh, 80px);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body,
+  #root {
+    position: relative;
+    background: var(--deep);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    touch-action: pan-y;
+    overscroll-behavior-y: auto;
+    color: var(--on-dark);
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background: var(--survey);
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Display type: condensed signage, the voice of the brand */
+  .h-display {
+    font-family: var(--display);
+    font-weight: 800;
+    font-stretch: 72%;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.005em;
+  }
+
+  /* Stacked slabs: each section lands on the previous one with a chamfered corner, like a poured floor plate */
+  .chamfer {
+    clip-path: polygon(0 0, calc(100% - var(--ch)) 0, 100% var(--ch), 100% 100%, 0 100%);
+  }
+  .stack {
+    position: relative;
+    z-index: 10;
+    margin-top: calc(var(--ch) * -1);
+  }
+
+  .on-light {
+    color: var(--ink);
+  }
+  .on-dark {
+    color: var(--on-dark);
+  }
+
+  .navbar-shell {
+    border: 1px solid rgba(239, 234, 224, 0.12);
+    border-radius: 14px;
+    background: transparent;
+    backdrop-filter: blur(12px) saturate(110%);
+  }
+  .navbar-shell--light {
+    border-color: rgba(22, 20, 15, 0.14);
+  }
+  .navbar-shell--scrolled {
+    box-shadow: 0 12px 34px rgba(3, 10, 24, 0.22);
+    backdrop-filter: blur(18px) saturate(115%);
+  }
+  @media (min-width: 1024px) {
+    .navbar-shell--scrolled {
+      width: min(780px, calc(100vw - 24px));
+    }
+  }
+
+  /* Wordmark: three stacked layers, the logo is the idea */
+  .st-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.18em;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.5rem;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--on-dark);
+  }
+  .st-mark__layers {
+    display: inline-grid;
+    gap: 0.1em;
+    width: 0.9em;
+  }
+  .st-mark__layers i {
+    display: block;
+    height: 0.16em;
+    background: var(--slab);
+  }
+  .st-mark__layers i:nth-child(1) {
+    background: var(--survey);
+  }
+  .st-mark__layers i:nth-child(2) {
+    background: var(--ply);
+  }
+  .navbar-shell--light .st-mark {
+    color: var(--ink);
+  }
+  .navbar-shell--light .st-mark__layers i:nth-child(3) {
+    background: var(--hoarding);
+  }
+
+  /* About panels: each owns a colour; a tall gradient seam washes the previous colour into the new one */
+  .about-panel {
+    position: relative;
+  }
+  .about-intro {
+    --intro-h: calc(100svh - 5.25rem - var(--seam) - 0.75rem);
+    min-height: 100svh;
+    padding: 5.25rem 0 calc(var(--seam) + 0.75rem);
+  }
+  .about-intro__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: var(--intro-h);
+  }
+  .about-intro__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .about-intro__title {
+    font-size: clamp(3.6rem, min(21vw, 13svh), 8rem);
+  }
+  .about-intro .about-portrait {
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+  }
+  .about-facts {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .about-intro__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) min(calc(var(--intro-h) * 0.8), 44vw);
+      gap: clamp(1.5rem, 4vw, 4rem);
+      align-items: stretch;
+    }
+    .about-intro__text {
+      justify-content: space-between;
+      min-width: 0;
+    }
+    .about-intro__title {
+      font-size: clamp(4rem, min(25svh, calc((min(100vw, 1500px) - 10rem - min(var(--intro-h) * 0.8, 44vw)) / 3.9)), 19rem);
+    } /* STRATUM. is ~3.8em wide */
+    .about-intro .about-portrait {
+      height: 100%;
+    }
+  }
+  @media (min-width: 768px) and (min-height: 700px) {
+    .about-facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(22, 20, 15, 0.18);
+    }
+  }
+  .about-panel--intro {
+    background: var(--slab);
+    color: var(--ink);
+  }
+  .about-panel--timeline {
+    background: var(--hoarding);
+    --seam-c: var(--hoarding);
+  }
+  .about-panel--methods {
+    background: var(--ply-light);
+    color: var(--ink);
+    --seam-c: var(--ply-light);
+  }
+  .about-panel--rules {
+    background: var(--slab);
+    color: var(--ink);
+    --seam-c: var(--slab);
+  }
+  .about-seam::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--seam) * -1 + 1px);
+    height: var(--seam);
+    background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--seam-c) 40%, transparent) 45%, var(--seam-c) 100%);
+    pointer-events: none;
+  }
+
+  .process-step::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 52px;
+    height: 52px;
+    background: var(--process-tint);
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    opacity: 0.55;
+    transition:
+      opacity 0.5s ease,
+      width 0.5s var(--ease-out),
+      height 0.5s var(--ease-out);
+    pointer-events: none;
+  }
+  .process-step:hover::after {
+    opacity: 1;
+    width: 76px;
+    height: 76px;
+  }
+
+  @media (pointer: fine) {
+    html.has-cursor,
+    html.has-cursor body,
+    html.has-cursor body * {
+      cursor: none !important;
+    }
+    html.has-cursor input:not([type='radio']):not([type='checkbox']),
+    html.has-cursor textarea {
+      cursor: text !important;
+    }
+  }
+
+  /* hover preview that follows the pointer over the project rows */
+  .work-cursor-preview {
+    position: fixed;
+    z-index: 9995;
+    width: min(340px, calc(100vw - 32px));
+    height: min(220px, calc(100vh - 32px));
+    pointer-events: none;
+    overflow: hidden;
+    border: 1px solid rgba(239, 234, 224, 0.25);
+    background: var(--deep);
+    box-shadow: 0 28px 80px rgba(2, 8, 20, 0.5);
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+    transform-origin: top left;
+  }
+  .work-cursor-preview__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .work-cursor-preview img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .work-cursor-preview span {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    left: 12px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8);
+  }
+  @media (max-width: 1023px) {
+    .work-cursor-preview {
+      display: none;
+    }
+  }
+
+  /* Mesh-flow: slow drifting colour for the contact section (static gradients, transform-only animation) */
+  .mesh-flow {
+    contain: layout paint;
+  }
+  .mesh-flow__blob {
+    position: absolute;
+    border-radius: 999px;
+    opacity: 0.5;
+  }
+  .mesh-flow__blob--a {
+    top: -10%;
+    left: 5%;
+    width: 42vw;
+    height: 42vw;
+    background: radial-gradient(circle, rgba(184, 154, 104, 0.2), transparent 70%);
+    animation: mesh-drift-a 22s ease-in-out infinite;
+    will-change: transform;
+  }
+  .mesh-flow__blob--b {
+    bottom: -15%;
+    right: 0;
+    width: 38vw;
+    height: 38vw;
+    background: radial-gradient(circle, rgba(184, 154, 104, 0.12), transparent 70%);
+    animation: mesh-drift-b 26s ease-in-out infinite;
+    will-change: transform;
+  }
+  .mesh-flow__blob--c {
+    top: 30%;
+    right: 25%;
+    width: 28vw;
+    height: 28vw;
+    background: radial-gradient(circle, rgba(120, 120, 120, 0.1), transparent 70%);
+    animation: mesh-drift-c 19s ease-in-out infinite;
+    will-change: transform;
+  }
+  @keyframes mesh-drift-a {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(6vw, 8vh) scale(1.15);
+    }
+  }
+  @keyframes mesh-drift-b {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-5vw, -6vh) scale(1.1);
+    }
+  }
+  @keyframes mesh-drift-c {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-4vw, 5vh) scale(0.9);
+    }
+  }
+  .mesh-flow__grain {
+    background: url('/noise.webp') 0 0 / 96px 96px repeat;
+  }
+  .mesh-flow[data-paused='true'] .mesh-flow__blob {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mesh-flow__blob {
+      animation: none;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    background: var(--deep);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3a362f;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #55503f;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--deep);
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+    display: block;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Floating buttons */
+.scroll-to-top-button {
+  right: 20px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  overflow: visible;
+}
+@media (max-width: 480px) {
+  .scroll-to-top-button {
+    right: 14px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* QUOTE FORM */
+.field {
+  position: relative;
+  display: block;
+}
+.field__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(239, 234, 224, 0.78);
+}
+.field__input {
+  width: 100%;
+  padding: 0.7rem 0;
+  border: 0;
+  border-bottom: 1px solid rgba(239, 234, 224, 0.3);
+  border-radius: 0;
+  background: transparent;
+  color: var(--on-dark);
+  font: 500 1rem/1.4 var(--sans);
+  outline: none;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.4s var(--ease-out);
+}
+.field__input::placeholder {
+  color: rgba(239, 234, 224, 0.38);
+}
+.field__input:focus {
+  border-bottom-color: var(--survey);
+  box-shadow: 0 1px 0 0 var(--survey);
+}
+.field__input[aria-invalid='true'] {
+  border-bottom-color: #ff8a8a;
+}
+.field__error {
+  margin-top: 0.3rem;
+  font-size: 12.5px;
+  color: #ffb4b4;
+}
+textarea.field__input {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+}
+.chip input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid rgba(239, 234, 224, 0.3);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(239, 234, 224, 0.85);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.35s var(--ease-out);
+}
+.chip:hover span {
+  border-color: var(--survey);
+}
+.chip input:checked + span {
+  background: var(--survey);
+  border-color: var(--survey);
+  color: var(--ink);
+}
+.chip input:focus-visible + span {
+  outline: 2px solid var(--ply);
+  outline-offset: 3px;
+}
+.chip input:active + span {
+  transform: scale(0.95);
+}

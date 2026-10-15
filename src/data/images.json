@@ -1,0 +1,62 @@
+{
+  "aurora-tower": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "riverline-bridge": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "meridian-business-park": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "harbor-logistics-hub": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "saffron-villas": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "terra-highway-interchange": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "lumen-hospital": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "skyline-metro-station": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "cedar-court-apartments": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "quarry-road-retail-plaza": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "greenfield-school": {
+    "w": 1600,
+    "h": 1000,
+    "small": 640
+  },
+  "foundation-section": {
+    "w": 1200,
+    "h": 1500,
+    "small": 640
+  }
+}
